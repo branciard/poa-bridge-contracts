@@ -19,7 +19,10 @@ const {
   FOREIGN_UPGRADEABLE_ADMIN_BRIDGE,
   FOREIGN_REQUIRED_BLOCK_CONFIRMATIONS,
   ERC20_TOKEN_ADDRESS,
-  FOREIGN_GAS_PRICE
+  FOREIGN_GAS_PRICE,
+  FOREIGN_DAILY_LIMIT,
+  FOREIGN_MAX_AMOUNT_PER_TX,
+  FOREIGN_MIN_AMOUNT_PER_TX
 } = env
 
 const DEPLOYMENT_ACCOUNT_ADDRESS = privateKeyToAddress(DEPLOYMENT_ACCOUNT_PRIVATE_KEY)
@@ -156,6 +159,64 @@ async function deployForeign() {
   })
   assert.equal(Web3Utils.hexToNumber(txInitializeBridge.status), 1, 'Transaction Failed')
   foreignNonce++
+
+  console.log('\ninitializing Foreign Bridge FOREIGN_DAILY_LIMIT with following parameter:\n')
+  console.log(
+    `FOREIGN_DAILY_LIMIT: ${FOREIGN_DAILY_LIMIT}`
+  )
+  const initializeFBridgeDailyLimit = await foreignBridgeImplementation.methods
+    .setDailyLimit(
+      FOREIGN_DAILY_LIMIT
+    )
+    .encodeABI({ from: DEPLOYMENT_ACCOUNT_ADDRESS })
+  const txInitializeDailyLimitBridge = await sendRawTxForeign({
+    data: initializeFBridgeDailyLimit,
+    nonce: foreignNonce,
+    to: foreignBridgeStorage.options.address,
+    privateKey: deploymentPrivateKey,
+    url: FOREIGN_RPC_URL
+  })
+  assert.equal(Web3Utils.hexToNumber(txInitializeDailyLimitBridge.status), 1, 'Transaction Failed')
+  foreignNonce++
+
+  console.log('\ninitializing Foreign Bridge FOREIGN_MAX_AMOUNT_PER_TX with following parameter:\n')
+  console.log(
+    `FOREIGN_MAX_AMOUNT_PER_TX: ${FOREIGN_MAX_AMOUNT_PER_TX}`
+  )
+  const initializeFBridgeMaxPerTx = await foreignBridgeImplementation.methods
+    .setMaxPerTx(
+      FOREIGN_MAX_AMOUNT_PER_TX
+    )
+    .encodeABI({ from: DEPLOYMENT_ACCOUNT_ADDRESS })
+  const txInitializeMaxPerTxBridge = await sendRawTxForeign({
+    data: initializeFBridgeMaxPerTx,
+    nonce: foreignNonce,
+    to: foreignBridgeStorage.options.address,
+    privateKey: deploymentPrivateKey,
+    url: FOREIGN_RPC_URL
+  })
+  assert.equal(Web3Utils.hexToNumber(txInitializeMaxPerTxBridge.status), 1, 'Transaction Failed')
+  foreignNonce++
+
+  console.log('\ninitializing Foreign Bridge FOREIGN_MIN_AMOUNT_PER_TX with following parameter:\n')
+  console.log(
+    `FOREIGN_MIN_AMOUNT_PER_TX: ${FOREIGN_MIN_AMOUNT_PER_TX}`
+  )
+  const initializeFBridgeMinPerTx = await foreignBridgeImplementation.methods
+    .setMinPerTx(
+      FOREIGN_MIN_AMOUNT_PER_TX
+    )
+    .encodeABI({ from: DEPLOYMENT_ACCOUNT_ADDRESS })
+  const txInitializeMinPerTxBridge = await sendRawTxForeign({
+    data: initializeFBridgeMinPerTx,
+    nonce: foreignNonce,
+    to: foreignBridgeStorage.options.address,
+    privateKey: deploymentPrivateKey,
+    url: FOREIGN_RPC_URL
+  })
+  assert.equal(Web3Utils.hexToNumber(txInitializeMinPerTxBridge.status), 1, 'Transaction Failed')
+  foreignNonce++
+
 
   const bridgeOwnershipData = await foreignBridgeStorage.methods
     .transferProxyOwnership(FOREIGN_UPGRADEABLE_ADMIN_BRIDGE)
