@@ -16,6 +16,7 @@ const {
 } = require('./web3')
 
 async function deployContract(contractJson, args, { from, network, nonce }) {
+ 
   let web3
   let url
   let gasPrice
@@ -28,6 +29,10 @@ async function deployContract(contractJson, args, { from, network, nonce }) {
     url = HOME_RPC_URL
     gasPrice = HOME_DEPLOYMENT_GAS_PRICE
   }
+
+  console.log(`[ deployContract FOREIGN_DEPLOYMENT_GAS_PRICE ] ${FOREIGN_DEPLOYMENT_GAS_PRICE}`)
+  console.log(`[ deployContract HOME_DEPLOYMENT_GAS_PRICE ] ${HOME_DEPLOYMENT_GAS_PRICE}`)
+  console.log(`[ deployContract gasPrice ] ${gasPrice}`)
   const options = {
     from
   }
@@ -55,6 +60,7 @@ async function deployContract(contractJson, args, { from, network, nonce }) {
 }
 
 async function sendRawTxHome(options) {
+  console.log(`[ sendRawTxHome HOME_DEPLOYMENT_GAS_PRICE ] ${HOME_DEPLOYMENT_GAS_PRICE}`)
   return sendRawTx({
     ...options,
     gasPrice: HOME_DEPLOYMENT_GAS_PRICE
@@ -62,6 +68,7 @@ async function sendRawTxHome(options) {
 }
 
 async function sendRawTxForeign(options) {
+  console.log(`[ sendRawTxHome FOREIGN_DEPLOYMENT_GAS_PRICE ] ${FOREIGN_DEPLOYMENT_GAS_PRICE}`)
   return sendRawTx({
     ...options,
     gasPrice: FOREIGN_DEPLOYMENT_GAS_PRICE
@@ -69,6 +76,7 @@ async function sendRawTxForeign(options) {
 }
 
 async function sendRawTx({ data, nonce, to, privateKey, url, gasPrice, value }) {
+  console.log(`[ sendRawTx gasPrice ] ${gasPrice}`)
   try {
     const rawTx = {
       nonce,
